@@ -152,7 +152,7 @@ public class TestActivity extends AppCompatActivity {
 //                    REQUEST_COARSE_LOCATION_PERMISSIONS);
 //        }
 
-        PermissionManager.check(this, Manifest.permission.ACCESS_COARSE_LOCATION, 1);
+        PermissionManager.check(this, Manifest.permission.READ_FRAME_BUFFER, 1);
 
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(
