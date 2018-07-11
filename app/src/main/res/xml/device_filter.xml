@@ -1,0 +1,6 @@
+<resources>
+    <usb-device />
+    <!--<usb-device vendor-id="2A03" product-id="0044"/>-->
+    <!--<usb-device vendor-id="9025" />-->
+    <!--<usb-device vendor-id="0x2341" />-->
+</resources>

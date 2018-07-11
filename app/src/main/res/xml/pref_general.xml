@@ -1,0 +1,53 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Subtitle -->
+    <PreferenceCategory
+        android:id="@+id/general_settings_subtitle"
+        android:title="@string/general_settings_subtitle" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="lift_switch"
+        android:summary="@string/settings_lift_summary"
+        android:title="@string/settings_lift_title" />
+
+    <!-- REPETITIONS -->
+    <EditTextPreference
+        android:defaultValue="@integer/repetitions_default"
+        android:inputType="number"
+        android:key="max_tests"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/repetitions_text" />
+
+    <!-- TIME BETWEEN TESTS -->
+    <EditTextPreference
+        android:defaultValue="@integer/time_tests_default"
+        android:inputType="number"
+        android:key="time_tests"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/time_tests" />
+
+    <!-- KICKS PER TEST -->
+    <EditTextPreference
+        android:defaultValue="@integer/number_kicks_default"
+        android:inputType="number"
+        android:key="max_kicks"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/kick_text" />
+
+    <!-- TIME BETWEEN KICKS -->
+    <EditTextPreference
+        android:defaultValue="@integer/time_kicks_default"
+        android:inputType="number"
+        android:key="time_kicks"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/time_kicks" />
+
+</PreferenceScreen>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.avant.eng.daedotester.HomeScreen">
+
+    <FrameLayout
+        android:id="@+id/Header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/header_bot_margin"
+        android:layout_marginLeft="@dimen/header_hor_margin"
+        android:layout_marginRight="@dimen/header_hor_margin"
+        android:layout_marginTop="@dimen/header_top_margin"
+        android:layout_weight="4">
+
+        <TextView
+            android:id="@+id/homeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_menu_home"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/screen_title"
+            android:layout_gravity="center" />
+
+        <ImageView
+            android:id="@+id/Logo"
+            android:layout_width="@dimen/logo_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            app:srcCompat="@drawable/logo_daedo" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/Content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/bot_margin"
+        android:layout_marginLeft="@dimen/hor_margin"
+        android:layout_marginRight="@dimen/hor_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/MainMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/test"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/test" />
+
+            <LinearLayout
+                android:id="@+id/SecondaryOptions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/settings" />
+
+                <ImageButton
+                    android:id="@+id/instructions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/info" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

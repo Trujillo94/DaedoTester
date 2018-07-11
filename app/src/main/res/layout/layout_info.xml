@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/BigContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.avant.eng.daedotester.TestCategory">
+
+
+    <FrameLayout
+        android:id="@+id/Header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/header_bot_margin"
+        android:layout_marginLeft="@dimen/header_hor_margin"
+        android:layout_marginRight="@dimen/header_hor_margin"
+        android:layout_marginTop="@dimen/header_top_margin"
+        android:layout_weight="4">
+
+        <TextView
+            android:id="@+id/testTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_info"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/screen_title"
+            android:layout_gravity="center" />
+
+        <ImageView
+            android:id="@+id/Logo"
+            android:layout_width="@dimen/logo_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            app:srcCompat="@drawable/logo_daedo" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/Container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/list_bot_margin"
+        android:layout_marginTop="@dimen/list_top_margin"
+        android:layout_weight="1"
+        android:divider="?android:dividerHorizontal"
+        android:showDividers="middle">
+
+        <LinearLayout
+            android:id="@+id/ContainerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Info_subtitle"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/subtitle_bot"
+                android:textSize="@dimen/instruct_size" />
+
+            <LinearLayout
+                android:id="@+id/ContentInfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Info1"
+                    android:layout_gravity="center_vertical|left" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Info2"
+                    android:layout_gravity="center_vertical|left" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Info3"
+                    android:layout_gravity="center_vertical|left" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ContainerDisc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Disc_subtitle"
+                android:layout_gravity="center"
+                android:textSize="@dimen/instruct_size"
+                android:layout_marginBottom="@dimen/subtitle_bot" />
+
+            <LinearLayout
+                android:id="@+id/ContentDisc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Disc1"
+                    android:layout_gravity="center_vertical|left" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Disc2"
+                    android:layout_gravity="center_vertical|left" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Disc3"
+                    android:layout_gravity="center_vertical|left" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+
+

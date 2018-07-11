@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.avant.eng.daedotester.TestActivity">
+
+    <!-- HEADER -->
+    <FrameLayout
+        android:id="@+id/Header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/header_bot_margin"
+        android:layout_marginLeft="@dimen/header_hor_margin"
+        android:layout_marginRight="@dimen/header_hor_margin"
+        android:layout_marginTop="@dimen/header_top_margin"
+        android:layout_weight="4">
+
+        <TextView
+            android:id="@+id/testTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_menu_test_mode"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/screen_title"
+            android:layout_gravity="center" />
+
+        <ImageView
+            android:id="@+id/Logo"
+            android:layout_width="@dimen/logo_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            app:srcCompat="@drawable/logo_daedo" />
+
+        <ImageView
+            android:id="@+id/ConnectionIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="80dp"
+            app:srcCompat="@drawable/usb_disconnected" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/Content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/test_bot_margin"
+        android:layout_marginLeft="@dimen/test_hor_margin"
+        android:layout_marginRight="@dimen/test_hor_margin"
+        android:layout_marginTop="@dimen/test_top_margin"
+        android:divider="?android:dividerHorizontal"
+        android:showDividers="middle"
+        android:layout_weight="1">
+
+        <!-- LEFT -->
+        <LinearLayout
+            android:id="@+id/LeftContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="@integer/testing_hor_weight_lateral">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/test_lateral_top_margin"
+                android:layout_marginBottom="@dimen/test_lateral_bot_margin"
+                android:divider="?android:dividerHorizontal"
+                android:showDividers="middle"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lectures_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="5"
+                        android:text="@string/lectures_title"
+                        android:textSize="@dimen/instruct_size" />
+
+                    <ListView
+                        android:id="@+id/lectures_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:autofillHints="@string/impact_speed_title"
+                        android:layout_weight="1"></ListView>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/read_speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_weight="3"
+                    android:layout_marginTop="20dp"
+                    android:text="0 km/h"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/speed_indicator" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CENTRAL -->
+        <FrameLayout
+            android:id="@+id/CentralContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/test_central_hor_margin"
+            android:layout_weight="@integer/testing_hor_weigth_central">
+
+            <!-- START TEST -->
+            <LinearLayout
+                android:id="@+id/StartContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!--<TextView-->
+                <!--android:id="@+id/Category"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Error parsing category"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:textSize="@dimen/instruct_size"/>-->
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/Start"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@color/colorGreen"
+                        app:srcCompat="@drawable/start" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/panel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="2"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/Info"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/kick_advertise"
+                                android:layout_gravity="center"
+                                android:textSize="@dimen/instruct_size" />
+
+                            <TextView
+                                android:id="@+id/Timer"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="READY."
+                                android:gravity="center"
+                                android:textColor="@color/colorGreen"
+                                android:textSize="@dimen/instruct_big_size" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/scoreboard"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="2"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tests_completed"
+                                android:layout_gravity="center"
+                                android:textSize="@dimen/instruct_size" />
+
+                            <TextView
+                                android:id="@+id/successful"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/colorGreen"
+                                android:textSize="@dimen/instruct_big_size" />
+
+                            <TextView
+                                android:id="@+id/failed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/colorRed"
+                                android:textSize="@dimen/instruct_big_size" />
+
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/Cancel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="3"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/colorRed"
+                            app:srcCompat="@drawable/cancel" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- CONNECT -->
+            <LinearLayout
+                android:id="@+id/ConnectContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/test_connect_top_margin"
+                android:layout_marginBottom="@dimen/test_connect_top_margin">
+
+                <TextView
+                    android:id="@+id/ConnectText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/connect_text"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/instruct_size"
+                    android:layout_weight="3" />
+
+                <ImageButton
+                    android:id="@+id/ConnectButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/connect"
+                    android:layout_weight="2" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- RIGHT -->
+        <LinearLayout
+            android:id="@+id/RightContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="@integer/testing_hor_weight_lateral">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/test_lateral_top_margin"
+                android:layout_marginBottom="@dimen/test_lateral_bot_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tests_strength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="HIGH - 28"
+                    android:textSize="@dimen/instruct_size" />
+
+                <TextView
+                    android:id="@+id/tests_regime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="100%"
+                    android:textSize="@dimen/instruct_size" />
+
+                <TextView
+                    android:id="@+id/tests_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="Tests: 1/25"
+                    android:textSize="@dimen/instruct_size"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/kicks_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="Kicks: 2/3"
+                    android:textSize="@dimen/instruct_size"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
