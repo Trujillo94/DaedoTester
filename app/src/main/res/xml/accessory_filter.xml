@@ -1,0 +1,8 @@
+<resources>
+    <usb-accessory />
+    <!--<usb-accessory-->
+    <!--vendor-id="2A03"-->
+    <!--product-id="0044" />-->
+    <!--<usb-accessory vendor-id="9025" />-->
+    <!--<usb-accessory vendor-id="0x2341" />-->
+</resources>

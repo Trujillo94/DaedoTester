@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.avant.eng.daedotester">
 
-    <!--<uses-feature android:name="android.hardware.usb.host" />-->
-    <uses-feature android:name="android.hardware.usb.accessory" />
-    <uses-feature android:name="android.hardware.usb.UsbAccessory" />
+    <uses-feature android:name="android.hardware.usb.host" />
 
     <application
         android:allowBackup="true"
@@ -13,6 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <receiver android:name="UsbReceiver">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.ACTION_USB_PERMISSION" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </receiver>
+
         <activity
             android:name=".InitialScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -24,20 +35,13 @@
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
 
             <meta-data
-                android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
-                android:resource="@xml/accessory_filter" />
-
-            <!--<intent-filter>-->
-            <!--<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />-->
-            <!--</intent-filter>-->
-
-            <!--<meta-data-->
-            <!--android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"-->
-            <!--android:resource="@xml/device_filter" />-->
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
 
         </activity>
         <activity
@@ -61,21 +65,13 @@
             android:label="@string/title_menu_test_mode"
             android:parentActivityName=".TestCategory">
 
-            <!--<intent-filter>-->
-            <!--<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
 
-            <!--<meta-data-->
-            <!--android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"-->
-            <!--android:resource="@xml/accessory_filter" />-->
-
-            <!--<intent-filter>-->
-            <!--<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />-->
-            <!--</intent-filter>-->
-
-            <!--<meta-data-->
-            <!--android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"-->
-            <!--android:resource="@xml/device_filter" />-->
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -98,12 +94,5 @@
                 android:value="com.avant.eng.daedotester.HomeScreen" />
         </activity>
     </application>
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.TRANSMIT_IR" />
-    <uses-permission android:name="android.permission.READ_HISTORY_BOOKMARKS" />
-    <uses-permission android:name="android.permission.WRITE_HISTORY_BOOKMARKS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>

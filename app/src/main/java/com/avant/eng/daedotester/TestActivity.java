@@ -85,8 +85,6 @@ public class TestActivity extends AppCompatActivity {
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private boolean mPermissionRequestPending;
 
-    private RequestPermissionHandler mRequestPermissionHandler = new RequestPermissionHandler();
-
     private UsbManager mUsbManager;
     private UsbDevice mDevice;
     private UsbDeviceConnection mUsbConnection;
@@ -106,6 +104,32 @@ public class TestActivity extends AppCompatActivity {
 
     public static Boolean connection_status = false;
     public boolean testCompleted = false;
+
+    public final UsbReceiver mUsbReceiver = new UsbReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (intent.getBooleanExtra(
+                            UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        openDevice(device);
+                    } else {
+                        Log.d(TAG, "permission denied for device "
+                                + device);
+                    }
+                    mPermissionRequestPending = false;
+                }
+            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                if (device != null && device.equals(mDevice)) {
+                    closeDevice();
+                }
+            }
+            Toast.makeText(TestActivity.this, "Intent received.", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     // Normal methods ------------------------------------------------------------------------------
 
@@ -148,51 +172,22 @@ public class TestActivity extends AppCompatActivity {
         listview = findViewById(R.id.lectures_list);
 
         // USB onCreate lines ----------------------------------------------------------------------
-//        String REQUEST_COARSE_LOCATION_PERMISSIONS;
-//        int hasPermission = ActivityCompat.checkSelfPermission(TestActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
-//        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(TestActivity.this,
-//                    new String[]{
-//                            android.Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    REQUEST_COARSE_LOCATION_PERMISSIONS);
-//        }
-//        PermissionManager.check(this, Manifest.permission.READ_FRAME_BUFFER, 1);
-
-        mRequestPermissionHandler.requestPermission(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                123, new RequestPermissionHandler.RequestPermissionListener() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(TestActivity.this, "request permission success", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailed() {
-                        Toast.makeText(TestActivity.this, "request permission failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(
                 ACTION_USB_PERMISSION), 0);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        filter.addAction(UsbManager.EXTRA_PERMISSION_GRANTED);
+        filter.addAction(ACTION_USB_PERMISSION);
         registerReceiver(mUsbReceiver, filter);
 
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-
-        try_connect();
+//        try_connect();
         if (connection_status) {
             createNewTest();
         } else {
             createConnectButton();
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        mRequestPermissionHandler.onRequestPermissionsResult(requestCode, permissions,
-                grantResults);
     }
 
     /**
@@ -312,7 +307,7 @@ public class TestActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        try_connect();
+//        try_connect();
         clearLectureList();
     }
 
@@ -591,39 +586,12 @@ public class TestActivity extends AppCompatActivity {
         return b;
     }
 
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                synchronized (this) {
-                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(
-                            UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        openDevice(device);
-                    } else {
-                        Log.d(TAG, "permission denied for device "
-                                + device);
-                    }
-                    mPermissionRequestPending = false;
-                }
-            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                if (device != null && device.equals(mDevice)) {
-                    closeDevice();
-                }
-            }
-        }
-    };
-
     private void openDevice(UsbDevice device) {
         mUsbConnection = mUsbManager.openDevice(device);
         if (mUsbConnection != null) {
             mDevice = device;
-            int fd = mUsbConnection.getFileDescriptor();
-//            mInputStream = new FileInputStream(fd);
-//            mOutputStream = new FileOutputStream(fd);
         } else {
+            Toast.makeText(TestActivity.this, "Couldn't open device.", Toast.LENGTH_SHORT).show();
         }
     }
 
