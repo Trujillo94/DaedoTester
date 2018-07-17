@@ -1,0 +1,43 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="hor_margin">160dp</dimen>
+    <dimen name="top_margin">80dp</dimen>
+    <dimen name="bot_margin">80dp</dimen>
+    <dimen name="list_hor_margin">400dp</dimen>
+    <dimen name="list_top_margin">56dp</dimen>
+    <dimen name="list_bot_margin">80dp</dimen>
+    <dimen name="header_hor_margin">16dp</dimen>
+    <dimen name="header_top_margin">22dp</dimen>
+    <dimen name="header_bot_margin">0dp</dimen>
+    <dimen name="weight_hor_margin">152dp</dimen>
+    <dimen name="weight_top_margin">56dp</dimen>
+    <dimen name="weight_bot_margin">80dp</dimen>
+    <dimen name="test_hor_margin">0dp</dimen>
+    <dimen name="test_top_margin">56dp</dimen>
+    <dimen name="test_bot_margin">80dp</dimen>
+    <dimen name="test_lateral_top_margin">20dp</dimen>
+    <dimen name="test_lateral_bot_margin">60dp</dimen>
+    <dimen name="test_central_hor_margin">100dp</dimen>
+    <dimen name="test_connect_top_margin">50dp</dimen>
+    <dimen name="test_connect_bot_margin">50dp</dimen>
+
+    <dimen name="screen_title">80sp</dimen>
+    <dimen name="instruct_size">24sp</dimen>
+    <dimen name="instruct_big_size">64sp</dimen>
+    <dimen name="normal_button_size">24sp</dimen>
+    <dimen name="big_button_size">40sp</dimen>
+    <dimen name="weight_button_size">24sp</dimen>
+    <dimen name="category_size">40sp</dimen>
+
+    <dimen name="logo_width">200dp</dimen>
+    <dimen name="title_width">800dp</dimen>
+    <dimen name="start_width">500dp</dimen>
+
+    <dimen name="speed_indicator">50sp</dimen>
+
+    <!-- INFO -->
+    <dimen name="subtitle_bot">20sp</dimen>
+
+</resources>

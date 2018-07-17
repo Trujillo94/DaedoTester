@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Subtitle -->
+    <PreferenceCategory
+        android:id="@+id/calibration_settings_subtitle"
+        android:title="@string/subtitle_settings_calibration" />
+
+    <!-- LOW LEVEL VALUE -->
+    <EditTextPreference
+        android:defaultValue="@integer/regime_low"
+        android:inputType="number"
+        android:key="low_regime"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/low_regime_title" />
+
+    <!-- MEDIUM LEVEL VALUE -->
+    <EditTextPreference
+        android:defaultValue="@integer/regime_medium"
+        android:inputType="number"
+        android:key="medium_regime"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/medium_regime_title" />
+
+    <!-- HIGH LEVEL VALUE -->
+    <EditTextPreference
+        android:defaultValue="@integer/regime_high"
+        android:inputType="number"
+        android:key="high_regime"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/high_regime_title" />
+</PreferenceScreen>

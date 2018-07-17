@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="high">1</integer>
+    <integer name="medium">2</integer>
+    <integer name="low">3</integer>
+
+    <integer name="millisTimer">3000</integer>
+    <integer name="millisInterval">100</integer>
+
+    <integer name="number_kicks_default">1</integer>
+    <integer name="repetitions_default">1</integer>
+    <integer name="time_tests_default">5</integer>
+    <integer name="time_kicks_default">3</integer>
+
+    <integer name="strength_low">15</integer>
+    <integer name="strength_medium">22</integer>
+    <integer name="strength_high">28</integer>
+    <integer name="strength_tol_default">1</integer>
+
+    <integer name="regime_low">50</integer>
+    <integer name="regime_medium">75</integer>
+    <integer name="regime_high">100</integer>
+
+    <integer name="testing_hor_weigth_central">3</integer>
+    <integer name="testing_hor_weight_lateral">5</integer>
+
+</resources>

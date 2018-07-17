@@ -1,0 +1,67 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Subtitle -->
+    <PreferenceCategory
+        android:id="@+id/levels_settings_subtitle"
+        android:title="@string/subtitle_settings_levels" />
+
+    <!-- LOW LEVEL VALUE -->
+    <EditTextPreference
+        android:defaultValue="@integer/strength_low"
+        android:inputType="number"
+        android:key="low_level"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/low_strength_title" />
+
+    <!-- MEDIUM LEVEL VALUE -->
+    <EditTextPreference
+        android:defaultValue="@integer/strength_medium"
+        android:inputType="number"
+        android:key="medium_level"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/medium_strength_title" />
+
+    <!-- HIGH LEVEL VALUE -->
+    <EditTextPreference
+        android:defaultValue="@integer/strength_high"
+        android:inputType="number"
+        android:key="high_level"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/high_strength_title" />
+
+    <!-- LOW LEVEL TOL -->
+    <EditTextPreference
+        android:defaultValue="@integer/strength_tol_default"
+        android:inputType="number"
+        android:key="low_tol"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/low_strength_tol" />
+
+    <!-- MEDIUM LEVEL TOL -->
+    <EditTextPreference
+        android:defaultValue="@integer/strength_tol_default"
+        android:inputType="number"
+        android:key="medium_tol"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/medium_strength_tol" />
+
+    <!-- HIGH LEVEL TOL -->
+    <EditTextPreference
+        android:defaultValue="@integer/strength_tol_default"
+        android:inputType="number"
+        android:key="high_tol"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/high_strength_tol" />
+
+</PreferenceScreen>

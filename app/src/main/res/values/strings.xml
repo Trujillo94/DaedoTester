@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">Daedo Tester</string>
+    <string name="title_activity_initial_screen">Initial Screen</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_menu_home">Protector Tester</string>
+    <string name="title_activity_test_screen">Testing Mode - Category</string>
+    <string name="title_menu_test_mode">Testing Mode</string>
+    <string name="subtitle_test_category">Choose the strength of the kicks\n</string>
+
+    <string name="settings_lift_title">Automatic lift</string>
+    <string name="settings_lift_summary">Lift the arm automatically after completing a test</string>
+    <string name="settings_repeat">Repeating hits</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_info">Information</string>
+
+    <string name="kick_advertise">Next kick in...</string>
+    <string name="connect_text">Not connected to micro-controller.</string>
+    <string name="lectures_title">Lectures</string>
+    <string name="impact_speed_title">Impact Speed (km/h)</string>
+    <string name="tests_completed">ALL TESTS COMPLETED.\n\n</string>
+
+    <!-- Information Panel -->
+    <string name="Info_subtitle">Daedo Tester´s operation</string>
+    <string name="Info1">1) Power the tester</string>
+    <string name="Info2">2) Open Daedo Tester application</string>
+    <string name="Info3">3) Ready to test!</string>
+
+    <string name="Disc_subtitle">In the event of disconnection:</string>
+    <string name="Disc1">1) Close Daedo Tester application</string>
+    <string name="Disc2">2) Restart machine</string>
+    <string name="Disc3">3) Open Daedo Tester application</string>
+
+    <!-- Doesn't work -->
+    <!--<string name="high_string">HIGH</string>-->
+    <!--<string name="medium_string">MEDIUM</string>-->
+    <!--<string name="low_string">LOW</string>-->
+
+    <!-- SETTINGS -->
+    <!-- General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="general_settings_subtitle">Set testing procedure\n</string>
+    <string name="repetitions_text">Number of tests</string>
+    <string name="kick_text">Kicks per test</string>
+    <string name="time_tests">Time between tests (s)</string>
+    <string name="time_kicks">Time between kicks (s)</string>
+
+    <!-- Levels Settings -->
+    <string name="pref_header_levels">Levels</string>
+    <string name="subtitle_settings_levels">Set kicks strength\n</string>
+    <string name="low_strength_title">Low</string>
+    <string name="medium_strength_title">Medium</string>
+    <string name="high_strength_title">High</string>
+    <string name="low_strength_tol">Tolerance - Low</string>
+    <string name="medium_strength_tol">Tolerance - Medium</string>
+    <string name="high_strength_tol">Tolerance - High</string>
+
+    <!-- Calibration Settings -->
+    <string name="pref_header_calibration">Calibration</string>
+    <string name="subtitle_settings_calibration">Set the regime for the corresponding levels\n</string>
+    <string name="low_regime_title">Low Regime (%)</string>
+    <string name="medium_regime_title">Medium Regime (%)</string>
+    <string name="high_regime_title">High Regime (%)</string>
+    <string name="invalid_regime">Invalid regime definition. Valid range: 10-100%</string>
+
+
+</resources>
