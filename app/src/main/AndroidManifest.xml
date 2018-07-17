@@ -4,7 +4,7 @@
 
     <!--<uses-feature android:name="android.hardware.usb.host" />-->
     <uses-feature android:name="android.hardware.usb.accessory" />
-    <uses-feature android:name="android.hardware.usb.UsbAccessory" />
+    <!--<uses-feature android:name="android.hardware.usb.UsbAccessory" />-->
 
     <application
         android:allowBackup="true"
@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <uses-library android:name="com.android.future.usb.accessory" />
         <activity
             android:name=".InitialScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -99,11 +100,8 @@
         </activity>
     </application>
 
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.TRANSMIT_IR" />
-    <uses-permission android:name="android.permission.READ_HISTORY_BOOKMARKS" />
-    <uses-permission android:name="android.permission.WRITE_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>
