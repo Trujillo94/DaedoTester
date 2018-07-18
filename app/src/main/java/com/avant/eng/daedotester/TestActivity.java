@@ -85,9 +85,10 @@ public class TestActivity extends AppCompatActivity {
     private boolean test_correct = true;
 
     // USB variables -------------------------------------------------------------------------------
-    private UsbManager mUsbManager;
-    private UsbDeviceConnection connection;
-    private UsbSerialDevice serialDevice;
+    public UsbManager mUsbManager;
+    public UsbDeviceConnection connection;
+    public UsbSerialDevice serialDevice;
+    public UsbSerialDevice serial;
     public List<Byte> buffer = new ArrayList<>();
     private Toast toast;
 
@@ -95,8 +96,8 @@ public class TestActivity extends AppCompatActivity {
     private static final int CHECK_CONN_INT = 16;
 
     private static final byte CHANGE_CONFIG = 0x11;
-    private static final byte AUTOLIFT_OFF = 0x0;
-    private static final byte AUTOLIFT_ON = 0x1;
+    private static final byte AUTOLIFT_OFF = 0x00;
+    private static final byte AUTOLIFT_ON = 0x01;
 
     private static final byte KICK_BYTE = 0x12;
     private static final byte STOP_BYTE = 0x13;
@@ -107,7 +108,6 @@ public class TestActivity extends AppCompatActivity {
 
 
     // Normal methods ------------------------------------------------------------------------------
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,10 +361,10 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void sendKickOrder() {
-        Byte[] byte_snd = new Byte[2];
+        byte[] byte_snd = new byte[2];
         byte_snd[0] = KICK_BYTE;
         byte_snd[1] = getDesiredRegime();
-        Byte[] tp_sl;
+        byte[] tp_sl;
         int tp, sl;
         float incr_encd_time_pulse = 0;
 
@@ -472,8 +472,8 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void checkConnection() {
-        Byte[] byte_snd = new Byte[1];
-        Byte[] byte_rcv;
+        byte[] byte_snd = new byte[1];
+        byte[] byte_rcv;
 
         byte_snd[0] = CHECK_CONNECTION;
         byte_rcv = sendByte(byte_snd, 1);
@@ -490,7 +490,7 @@ public class TestActivity extends AppCompatActivity {
     private void sendAutoLiftParam() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean autoLift = sharedPref.getBoolean("lift_switch", false);
-        Byte[] byte_snd = new Byte[2];
+        byte[] byte_snd = new byte[2];
         byte_snd[0] = CHANGE_CONFIG;
         if (autoLift) {
             byte_snd[1] = AUTOLIFT_ON;
@@ -527,11 +527,6 @@ public class TestActivity extends AppCompatActivity {
 
 
     // COMMUNICATION FUNCTIONS ---------------------------------------------------------------------
-    Byte[] sendByte(Byte[] writeBytes, int length) {
-        Byte[] readBytes = writeBytes;
-        return readBytes;
-    }
-
     private void startUsbConnection() {
 
         Map<String, UsbDevice> usbDevices = mUsbManager.getDeviceList();
@@ -612,6 +607,29 @@ public class TestActivity extends AppCompatActivity {
             b[i] = B[i];
         }
         return b;
+    }
+
+    byte[] sendByte(byte[] writeBytes, int length) {
+        byte[] out = new byte[length];
+        for (int i = 0; i < length; i++) {
+            out[i] = 0x00;
+        }
+        Byte[] readBytes = new Byte[length];
+        long t0;
+        buffer.clear();
+        serial.write(writeBytes);
+        t0 = System.currentTimeMillis();
+        while (System.currentTimeMillis() < t0 + 2000) {
+            try {
+                readBytes = readByte(length);
+                break;
+            } catch (Exception e) {
+            }
+        }
+        for (int i = 0; i < length; i++) {
+            out[i] = readBytes[i];
+        }
+        return out;
     }
 
     private void toast(final String message) {
