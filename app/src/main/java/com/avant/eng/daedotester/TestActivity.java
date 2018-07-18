@@ -6,12 +6,14 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -45,10 +49,12 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.felhr.usbserial.UsbSerialDevice;
+import com.felhr.usbserial.UsbSerialInterface;
+
 public class TestActivity extends AppCompatActivity {
 
     // Normal variables ----------------------------------------------------------------------------
-    private TextView category;
     private TextView timerView;
     private TextView info;
     private TextView test_strength;
@@ -66,9 +72,9 @@ public class TestActivity extends AppCompatActivity {
     private LinearLayout start_container;
     private LinearLayout panel;
     private LinearLayout scoreboard;
-    private ListView listview;
+    private ListView listview_lectures;
     //    private String[] values;
-    final ArrayList<String> list = new ArrayList<>();
+    final ArrayList<String> list_lectures = new ArrayList<>();
     ToneGenerator buzzer = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, ToneGenerator.MAX_VOLUME);
     CountDownTimer timer;
 
@@ -79,17 +85,11 @@ public class TestActivity extends AppCompatActivity {
     private boolean test_correct = true;
 
     // USB variables -------------------------------------------------------------------------------
-    private static final String TAG = TestActivity.class.getSimpleName();
-
-    private PendingIntent mPermissionIntent;
-    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private boolean mPermissionRequestPending;
-
     private UsbManager mUsbManager;
-    private UsbDevice mDevice;
-    private UsbDeviceConnection mUsbConnection;
-    private FileInputStream mInputStream;
-    private FileOutputStream mOutputStream;
+    private UsbDeviceConnection connection;
+    private UsbSerialDevice serialDevice;
+    public List<Byte> buffer = new ArrayList<>();
+    private Toast toast;
 
     private static final byte CHECK_CONNECTION = 0x10;
     private static final int CHECK_CONN_INT = 16;
@@ -105,34 +105,10 @@ public class TestActivity extends AppCompatActivity {
     public static Boolean connection_status = false;
     public boolean testCompleted = false;
 
-    public final UsbReceiver mUsbReceiver = new UsbReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                synchronized (this) {
-                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(
-                            UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        openDevice(device);
-                    } else {
-                        Log.d(TAG, "permission denied for device "
-                                + device);
-                    }
-                    mPermissionRequestPending = false;
-                }
-            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                if (device != null && device.equals(mDevice)) {
-                    closeDevice();
-                }
-            }
-            Toast.makeText(TestActivity.this, "Intent received.", Toast.LENGTH_SHORT).show();
-        }
-    };
 
     // Normal methods ------------------------------------------------------------------------------
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,20 +145,13 @@ public class TestActivity extends AppCompatActivity {
         timer = createNewTimer(kicksTimePref);
 
         // List View
-        listview = findViewById(R.id.lectures_list);
+        listview_lectures = findViewById(R.id.lectures_list);
 
         // USB onCreate lines ----------------------------------------------------------------------
-        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(
-                ACTION_USB_PERMISSION), 0);
-        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        filter.addAction(UsbManager.EXTRA_PERMISSION_GRANTED);
-        filter.addAction(ACTION_USB_PERMISSION);
-        registerReceiver(mUsbReceiver, filter);
+        mUsbManager = getSystemService(UsbManager.class);
+        startUsbConnection();
 
-//        try_connect();
+        try_connect();
         if (connection_status) {
             createNewTest();
         } else {
@@ -197,9 +166,7 @@ public class TestActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         cancelTimer();
-        if (mUsbManager.getDeviceList() != null) {
-            closeDevice();
-        }
+        stopUsbConnection();
     }
 
     void cancelTimer() {
@@ -210,7 +177,7 @@ public class TestActivity extends AppCompatActivity {
     private CountDownTimer createNewTimer(String millisInFuture) {
         CountDownTimer timer = new CountDownTimer(Long.valueOf(millisInFuture) * 1000, 100) {
             int counter = 0;
-            byte[] b;
+            Byte[] b;
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -240,7 +207,6 @@ public class TestActivity extends AppCompatActivity {
                 this.cancel();
                 b = readByte(1);
                 if (b[0] != ACKNOWLEDGE_BYTE) {
-//                        Toast.makeText(this,"Acknowledge did not received.",Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(TestActivity.this, TestCategory.class);
                     Bundle bundle = new Bundle();
                     intent.putExtras(bundle);
@@ -307,7 +273,7 @@ public class TestActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-//        try_connect();
+        try_connect();
         clearLectureList();
     }
 
@@ -318,9 +284,7 @@ public class TestActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mUsbManager.getDeviceList() != null) {
-            closeDevice();
-        }
+        mUsbManager = null;
     }
 
     private void createNewTest() {
@@ -397,17 +361,17 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void sendKickOrder() {
-        byte[] buffer = new byte[2];
-        buffer[0] = KICK_BYTE;
-        buffer[1] = getDesiredRegime();
-        byte[] tp_sl;
+        Byte[] byte_snd = new Byte[2];
+        byte_snd[0] = KICK_BYTE;
+        byte_snd[1] = getDesiredRegime();
+        Byte[] tp_sl;
         int tp, sl;
         float incr_encd_time_pulse = 0;
 
         checkConnection();
         if (connection_status) {
             sendAutoLiftParam();
-            tp_sl = sendByte(buffer, 5);
+            tp_sl = sendByte(byte_snd, 5);
             tp = ((tp_sl[0] & 0xFF) << 0)
                     | ((tp_sl[1] & 0xFF) << 8)
                     | ((tp_sl[2] & 0xFF) << 16)
@@ -416,9 +380,9 @@ public class TestActivity extends AppCompatActivity {
             sl = ((tp_sl[4] & 0xFF) << 32);
             newLecture(incr_encd_time_pulse, sl);
         } else {
-            Toast.makeText(this, "Micro-controller not found.", Toast.LENGTH_SHORT).show();
+            toast("Micro-controller not found.");
         }
-        Toast.makeText(this, "KICK COMPLETED.", Toast.LENGTH_SHORT).show();
+        toast("KICK COMPLETED.");
     }
 
 
@@ -441,13 +405,13 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void updateLectureList(String value) {
-        list.add(value);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
-        listview.setAdapter(adapter);
+        list_lectures.add(value);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list_lectures);
+        listview_lectures.setAdapter(adapter);
     }
 
     private void clearLectureList() {
-        listview.setAdapter(null);
+        listview_lectures.setAdapter(null);
     }
 
     private byte getDesiredRegime() {
@@ -501,19 +465,19 @@ public class TestActivity extends AppCompatActivity {
     }
 
     void try_connect() {
-        if (mInputStream == null || mOutputStream == null) {
-            connect();
+        if (mUsbManager == null) {
+            startUsbConnection();
         }
         checkConnection();
     }
 
     private void checkConnection() {
-        byte[] buffer_snd = new byte[1];
-        byte[] buffer_rcv;
+        Byte[] byte_snd = new Byte[1];
+        Byte[] byte_rcv;
 
-        buffer_snd[0] = CHECK_CONNECTION;
-        buffer_rcv = sendByte(buffer_snd, 1);
-        if (buffer_rcv[0] == CHECK_CONN_INT) {
+        byte_snd[0] = CHECK_CONNECTION;
+        byte_rcv = sendByte(byte_snd, 1);
+        if (byte_rcv[0] == CHECK_CONN_INT) {
             connection_status = true;
         } else {
             connection_status = false;
@@ -526,15 +490,15 @@ public class TestActivity extends AppCompatActivity {
     private void sendAutoLiftParam() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean autoLift = sharedPref.getBoolean("lift_switch", false);
-        byte[] buffer = new byte[2];
-        buffer[0] = CHANGE_CONFIG;
+        Byte[] byte_snd = new Byte[2];
+        byte_snd[0] = CHANGE_CONFIG;
         if (autoLift) {
-            buffer[1] = AUTOLIFT_ON;
+            byte_snd[1] = AUTOLIFT_ON;
         } else {
-            buffer[1] = AUTOLIFT_OFF;
+            byte_snd[1] = AUTOLIFT_OFF;
         }
 
-        sendByte(buffer, 1);
+        sendByte(byte_snd, 1);
     }
 
     private void updateConnectionIcon() {
@@ -563,69 +527,104 @@ public class TestActivity extends AppCompatActivity {
 
 
     // COMMUNICATION FUNCTIONS ---------------------------------------------------------------------
-    byte[] sendByte(byte[] buffer, int length) {
-        byte readBytes[] = new byte[length];
-        if (mOutputStream != null) {
-            try {
-                mOutputStream.write(buffer);
-                readBytes = readByte(length);
-            } catch (IOException e) {
-            }
-        }
+    Byte[] sendByte(Byte[] writeBytes, int length) {
+        Byte[] readBytes = writeBytes;
         return readBytes;
     }
 
-    byte[] readByte(int length) {
-        byte[] b = new byte[length];
-        if (mInputStream != null) {
-            try {
-                mInputStream.read(b);
-            } catch (IOException e) {
+    private void startUsbConnection() {
+
+        Map<String, UsbDevice> usbDevices = mUsbManager.getDeviceList();
+
+        if (!usbDevices.isEmpty()) {
+            UsbDevice device;
+            for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
+                device = entry.getValue();
+                if (device != null) {
+                    toast("Device found: " + device.getDeviceName());
+                    if (mUsbManager.hasPermission(device)) {
+                        startSerialConnection(mUsbManager, device);
+                    } else {
+                        toast("Permission denied");
+                    }
+                    return;
+                }
             }
+        }
+
+        toast("Could not start USB connection - No devices found");
+    }
+
+    void startSerialConnection(UsbManager mUsbManager, UsbDevice device) {
+        UsbDeviceConnection connection = mUsbManager.openDevice(device);
+        UsbSerialDevice serial = UsbSerialDevice.createUsbSerialDevice(device, connection);
+
+        if (serial != null && serial.open()) {
+            serial.setBaudRate(9600);
+            serial.setDataBits(UsbSerialInterface.DATA_BITS_8);
+            serial.setStopBits(UsbSerialInterface.STOP_BITS_1);
+            serial.setParity(UsbSerialInterface.PARITY_NONE);
+            serial.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
+            serial.read(mCallback);
+
+        }
+    }
+
+    private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
+        @Override
+        public void onReceivedData(byte[] data) {
+
+            for (int i = 0; i < data.length; i++) {
+                buffer.add(data[i]);
+            }
+            toast("Length: " + String.valueOf(buffer.size()));
+        }
+    };
+
+    private void stopUsbConnection() {
+        try {
+            if (serialDevice != null) {
+                serialDevice.close();
+            }
+
+            if (connection != null) {
+                connection.close();
+            }
+        } finally {
+            serialDevice = null;
+            connection = null;
+        }
+    }
+
+    Byte[] readByte(int length) {
+        Byte[] B = buffer.toArray(new Byte[buffer.size()]);
+
+        Iterator<Byte> iter = buffer.listIterator();
+        for (int k = 0; k < length; k++) {
+            if (iter.hasNext()) {
+                iter.next();
+                iter.remove();
+            }
+        }
+
+        Byte[] b = new Byte[length];
+        for (int i = 0; i < length; i++) {
+            b[i] = B[i];
         }
         return b;
     }
 
-    private void openDevice(UsbDevice device) {
-        mUsbConnection = mUsbManager.openDevice(device);
-        if (mUsbConnection != null) {
-            mDevice = device;
-        } else {
-            Toast.makeText(TestActivity.this, "Couldn't open device.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void closeDevice() {
-        try {
-            if (mUsbConnection != null) {
-                mUsbConnection.close();
-            }
-        } catch (Exception e) {
-        } finally {
-            mUsbConnection = null;
-            mDevice = null;
-        }
-    }
-
-    private void connect() {
-        HashMap<String, UsbDevice> devices = mUsbManager.getDeviceList();
-        UsbDevice device = (devices == null ? null : devices.get(0));
-
-        if (device != null) {
-            Toast.makeText(TestActivity.this, "DEVICE: " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
-            if (mUsbManager.hasPermission(device)) {
-                openDevice(device);
-            } else {
-                synchronized (mUsbReceiver) {
-                    if (!mPermissionRequestPending) {
-                        mUsbManager.requestPermission(device,
-                                mPermissionIntent);
-                        mPermissionRequestPending = true;
-                    }
+    private void toast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (toast != null) {
+                    toast.cancel();
+                    toast = null;
                 }
+                toast = Toast.makeText(TestActivity.this, message, Toast.LENGTH_SHORT);
+                toast.show();
             }
-        } else {
-            Toast.makeText(TestActivity.this, "DEVICE: null", Toast.LENGTH_SHORT).show();
-        }
+        });
     }
 }
