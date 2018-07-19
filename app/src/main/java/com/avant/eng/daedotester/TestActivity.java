@@ -1,6 +1,5 @@
 package com.avant.eng.daedotester;
 
-import android.Manifest;
 import android.content.SharedPreferences;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -9,12 +8,8 @@ import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -26,31 +21,19 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
+
+import static java.lang.System.currentTimeMillis;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -85,15 +68,16 @@ public class TestActivity extends AppCompatActivity {
     private boolean test_correct = true;
 
     // USB variables -------------------------------------------------------------------------------
-    public UsbManager mUsbManager;
-    public UsbDeviceConnection connection;
-    public UsbSerialDevice serialDevice;
-    public UsbSerialDevice serial;
+    private UsbManager mUsbManager;
+    private UsbDeviceConnection connection;
+    private UsbSerialDevice serialDevice;
+    private UsbSerialDevice serial;
     public List<Byte> buffer = new ArrayList<>();
     private Toast toast;
 
     private static final byte CHECK_CONNECTION = 0x10;
     private static final int CHECK_CONN_INT = 16;
+    private static final long CONNECT_TIMEOUT = 10000;
 
     private static final byte CHANGE_CONFIG = 0x11;
     private static final byte AUTOLIFT_OFF = 0x00;
@@ -103,7 +87,6 @@ public class TestActivity extends AppCompatActivity {
     private static final byte STOP_BYTE = 0x13;
     private static final byte ACKNOWLEDGE_BYTE = 0x14;
 
-    public static Boolean new_incoming_data = false;
     public static Boolean connection_status = false;
     public boolean testCompleted = false;
 
@@ -369,7 +352,7 @@ public class TestActivity extends AppCompatActivity {
         int tp, sl;
         float incr_encd_time_pulse = 0;
 
-        checkConnection();
+//        checkConnection();
         if (connection_status) {
             sendAutoLiftParam();
             tp_sl = sendByte(byte_snd, 5);
@@ -553,7 +536,7 @@ public class TestActivity extends AppCompatActivity {
 
     void startSerialConnection(UsbManager mUsbManager, UsbDevice device) {
         UsbDeviceConnection connection = mUsbManager.openDevice(device);
-        UsbSerialDevice serial = UsbSerialDevice.createUsbSerialDevice(device, connection);
+        serial = UsbSerialDevice.createUsbSerialDevice(device, connection);
 
         if (serial != null && serial.open()) {
             serial.setBaudRate(9600);
@@ -569,7 +552,6 @@ public class TestActivity extends AppCompatActivity {
     private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
         @Override
         public void onReceivedData(byte[] data) {
-            new_incoming_data = true;
             for (int i = 0; i < data.length; i++) {
                 buffer.add(data[i]);
             }
@@ -616,18 +598,25 @@ public class TestActivity extends AppCompatActivity {
         for (int i = 0; i < length; i++) {
             readBytes[i] = 0x00;
         }
-        long t0;
+
         buffer.clear();
-//        toast(String.valueOf(writeBytes));
-        serial.write(writeBytes);
-//        t0 = System.currentTimeMillis();
-//        while (!new_incoming_data) {
-//            readBytes = readByte(length);
-//            new_incoming_data = false;
-//        }
-        if (new_incoming_data) {
-            readBytes[0] = CHECK_CONNECTION;
+        try {
+            serial.write(writeBytes);
+            long t0 = System.currentTimeMillis();
+            while (currentTimeMillis() - t0 < CONNECT_TIMEOUT) {
+                try {
+                    if (buffer.size() >= length) {
+                        readBytes = readByte(length);
+                        break;
+                    }
+                } catch (Exception e) {
+                }
+            }
+        } catch (Exception e) {
         }
+
+        toast("Written: " + String.valueOf(writeBytes[0]) + " Read: " + String.valueOf(readBytes[0]) + " Length: " + String.valueOf(buffer.size()));
+
         for (int i = 0; i < length; i++) {
             out[i] = readBytes[i];
         }
