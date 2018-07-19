@@ -103,6 +103,7 @@ public class TestActivity extends AppCompatActivity {
     private static final byte STOP_BYTE = 0x13;
     private static final byte ACKNOWLEDGE_BYTE = 0x14;
 
+    public static Boolean new_incoming_data = false;
     public static Boolean connection_status = false;
     public boolean testCompleted = false;
 
@@ -568,7 +569,7 @@ public class TestActivity extends AppCompatActivity {
     private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
         @Override
         public void onReceivedData(byte[] data) {
-
+            new_incoming_data = true;
             for (int i = 0; i < data.length; i++) {
                 buffer.add(data[i]);
             }
@@ -611,20 +612,21 @@ public class TestActivity extends AppCompatActivity {
 
     byte[] sendByte(byte[] writeBytes, int length) {
         byte[] out = new byte[length];
-        for (int i = 0; i < length; i++) {
-            out[i] = 0x00;
-        }
         Byte[] readBytes = new Byte[length];
+        for (int i = 0; i < length; i++) {
+            readBytes[i] = 0x00;
+        }
         long t0;
         buffer.clear();
+//        toast(String.valueOf(writeBytes));
         serial.write(writeBytes);
-        t0 = System.currentTimeMillis();
-        while (System.currentTimeMillis() < t0 + 2000) {
-            try {
-                readBytes = readByte(length);
-                break;
-            } catch (Exception e) {
-            }
+//        t0 = System.currentTimeMillis();
+//        while (!new_incoming_data) {
+//            readBytes = readByte(length);
+//            new_incoming_data = false;
+//        }
+        if (new_incoming_data) {
+            readBytes[0] = CHECK_CONNECTION;
         }
         for (int i = 0; i < length; i++) {
             out[i] = readBytes[i];
